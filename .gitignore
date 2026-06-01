@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+.env
+wisata.db
+.DS_Store

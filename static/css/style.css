@@ -1,0 +1,157 @@
+:root {
+    --green: #198754;
+    --soft-green: #edf8f1;
+    --dark: #17221c;
+}
+
+body {
+    background: #f7faf8;
+    color: var(--dark);
+}
+
+.hero-section {
+    background:
+        radial-gradient(circle at top left, rgba(25,135,84,.16), transparent 35%),
+        linear-gradient(135deg, #ffffff 0%, #edf8f1 100%);
+    border-bottom: 1px solid #e5efe9;
+}
+
+.eyebrow {
+    font-size: .78rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 700;
+}
+
+.search-card,
+.wisata-card,
+.itinerary-card {
+    border-radius: 22px;
+}
+
+.wisata-img {
+    height: 210px;
+    object-fit: cover;
+}
+
+.detail-img {
+    width: 100%;
+    height: 475px;
+    object-fit: cover;
+}
+
+.recommend-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: .85rem;
+}
+
+.recommend-meta span {
+    background: var(--soft-green);
+    color: #1d5d3b;
+    border-radius: 999px;
+    padding: 5px 10px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.detail-grid > div {
+    background: var(--soft-green);
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.detail-grid .label {
+    display: block;
+    color: #66756d;
+    font-size: .8rem;
+    margin-bottom: 4px;
+}
+
+.itinerary-text {
+    white-space: pre-line;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .detail-img {
+        height: 300px;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
+
+
+/* .table {
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.table th {
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.table img {
+    border: 1px solid #e5efe9;
+} */
+
+
+
+
+
+
+
+
+.itinerary-text table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.itinerary-text th,
+.itinerary-text td {
+    border: 1px solid #dce8df;
+    padding: 10px 12px;
+    vertical-align: top;
+    font-size: 0.92rem;
+}
+
+.itinerary-text th {
+    background: #edf8f1;
+    color: #198754;
+    font-weight: 700;
+}
+
+.itinerary-text h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.itinerary-text ul {
+    padding-left: 20px;
+}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Detail {{ wisata.nama }}{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <a href="{{ url_for('index') }}" class="text-decoration-none text-success">← Kembali ke pencarian</a>
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <img src="{{ wisata.image }}" class="detail-img" alt="Foto {{ wisata.nama }}" onerror="this.src='https://placehold.co/1000x600?text=Wisata+Jogja'">
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <span class="badge text-bg-success mb-2">{{ wisata.derived_category|title }}</span>
+                    <h1 class="h2 fw-bold mb-2">{{ wisata.nama }}</h1>
+                    <p class="text-muted">{{ wisata.type }}</p>
+
+                    <div class="detail-grid mb-4">
+                        <div>
+                            <span class="label">Rating</span>
+                            <b>⭐ {{ wisata.vote_average }} / 5</b>
+                        </div>
+                        <div>
+                            <span class="label">Jumlah rating/pengunjung</span>
+                            <b>{{ wisata.vote_count }}</b>
+                        </div>
+                        <div>
+                            <span class="label">HTM Weekday</span>
+                            <b>{{ wisata.htm_weekday|rupiah }}</b>
+                        </div>
+                        <div>
+                            <span class="label">HTM Weekend</span>
+                            <b>{{ wisata.htm_weekend|rupiah }}</b>
+                        </div>
+                    </div>
+
+                    <p>{{ wisata.description }}</p>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a class="btn btn-success" target="_blank" href="https://www.google.com/maps/search/?api=1&query={{ wisata.latitude }},{{ wisata.longitude }}">Buka di Google Maps</a>
+                        <a class="btn btn-outline-success" href="{{ url_for('itinerary', wisata_id=wisata.id, lat=lat, lon=lon) }}">Buat Itinerary</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-3">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-3">Tampilan Maps</h2>
+                    <div class="ratio ratio-16x9 rounded overflow-hidden">
+                        <iframe
+                            src="https://maps.google.com/maps?q={{ wisata.latitude }},{{ wisata.longitude }}&z=15&output=embed"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if itinerary %}
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm itinerary-card">
+                <div class="card-body p-4">
+                    <div class="itinerary-text">{{ itinerary|safe }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Rekomendasi Wisata Jogja | JogjaTrip AI{% endblock %}
+
+{% block content %}
+<section class="hero-main">
+    <div class="hero-overlay"></div>
+    <div class="container-fluid px-4 px-lg-5 position-relative">
+        <div class="row align-items-center min-vh-hero g-4">
+            <div class="col-lg-6 col-xl-5">
+                <div class="hero-copy">
+                    <h1>Temukan Wisata Jogja yang Paling Cocok untukmu dengan Bantuan <span>AI ✨</span></h1>
+                    <p>
+                        Cukup pilih tempat favorit atau ceritakan preferensimu, kami akan buatkan rekomendasi
+                        tempat serupa dan itinerary terbaik untukmu.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6 offset-xl-1">
+                <div class="ai-search-card">
+                    <form method="post" id="searchForm">
+                        <label class="form-label fw-bold">Pilih kategori wisata yang anda suka</label>
+                        <select class="form-select search-input" name="category" required>
+                            {% for category in categories %}
+                            <option value="{{ category }}" {% if form.category == category %}selected{% endif %}>{{ category|title }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div class="separator"><span>atau</span></div>
+
+                        <label class="form-label fw-bold">Ceritakan preferensi liburanmu</label>
+                        <div class="keyword-wrap">
+                            <input class="form-control search-input" name="keyword" value="{{ form.keyword }}" placeholder="Contoh: Saya mau wisata alam yang adem dan cocok untuk keluarga" required>
+                        </div>
+
+                        <div class="row g-2 mt-2 visually-compact-location">
+                            <div class="col-md-6">
+                                <input class="form-control form-control-sm" name="lat" id="lat" value="{{ form.lat }}" placeholder="Latitude user">
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control form-control-sm" name="lon" id="lon" value="{{ form.lon }}" placeholder="Longitude user">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-ai-submit w-100 mt-4" type="submit">
+                            🔍 Cari Rekomendasi & Buat Itinerary
+                        </button>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if results %}
+<section class="recommend-section" id="rekomendasi">
+    <div class="container-fluid px-4 px-lg-5 py-5">
+        <div class="section-heading text-center mb-4">
+            <p>Hasil Rekomendasi</p>
+            <h2>Top 5 Wisata yang Paling Cocok</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3 mt-4">
+            {% for item in results %}
+            <div class="col">
+                <div class="card wisata-card-table h-100 border-0 shadow-sm">
+                    <div class="rank-badge">#{{ loop.index }}</div>
+                    <img src="{{ item.image }}" class="card-img-top wisata-img-table" alt="Foto {{ item.nama }}" onerror="this.src='https://placehold.co/800x500?text=Wisata+Jogja'">
+                    <div class="card-body d-flex flex-column p-3">
+                        <h3 class="wisata-title">{{ item.nama }}</h3>
+                        <p class="wisata-category">{{ item.derived_category|title }}</p>
+
+                        <div class="table-like-info">
+                            <div><span>Persentase Rekomendasi</span><b>{{ item.score }}%</b></div>
+                            <div><span>Rating</span><b>⭐ {{ item.vote_average }}</b></div>
+                            <div><span>Ulasan</span><b>{{ item.vote_count }}</b></div>
+                            <div>
+                                <span>Jarak</span>
+                                {% if item.distance_km is not none %}
+                                <b>{{ "%.2f"|format(item.distance_km) }} km</b>
+                                {% else %}
+                                <b>GPS belum aktif</b>
+                                {% endif %}
+                            </div>
+                            <div><span>Weekday</span><b>{{ item.htm_weekday|rupiah }}</b></div>
+                        </div>
+
+                        <p class="wisata-desc flex-grow-1">{{ item.description|short(95) }}</p>
+                        <a href="{{ url_for('detail', wisata_id=item.id, lat=form.lat, lon=form.lon) }}" class="btn btn-outline-success btn-sm w-100 mt-2">Lihat Detail</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="feature-strip-section">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="feature-strip">
+            <div class="feature-item">
+                <div class="feature-icon blue">🤖</div>
+                <div>
+                    <h3>Rekomendasi Cerdas</h3>
+                    <p>Dibuat dengan AI berdasarkan kemiripan konten dan preferensimu.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon pink">📍</div>
+                <div>
+                    <h3>Rute Optimal</h3>
+                    <p>Itinerary disusun secara logis agar perjalanan lebih efisien dan menyenangkan.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon green">💵</div>
+                <div>
+                    <h3>Estimasi Biaya</h3>
+                    <p>Dapatkan estimasi biaya agar liburanmu lebih terencana.</p>
+                </div>
+            </div>
+            <div class="feature-item border-end-0">
+                <div class="feature-icon dark">🗺️</div>
+                <div>
+                    <h3>Peta Interaktif</h3>
+                    <p>Lihat lokasi semua tempat rekomendasi langsung di peta.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/location.js') }}"></script>
+{% endblock %}
