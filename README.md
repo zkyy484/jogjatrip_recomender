@@ -22,7 +22,7 @@ wisata_recommender/
 ├── app.py
 ├── requirements.txt
 ├── .env.example
-├── wisata.db                  # dibuat otomatis saat aplikasi dijalankan
+├── wisata.db             
 ├── data/
 │   └── data_jogja.csv
 ├── templates/
@@ -115,16 +115,7 @@ cp .env.example .env
 Isi API key:
 
 ```text
-GEMINI_API_KEY=isi_api_key_kamu
+GEMINI_API_KEY=isi_api_key
 ```
 
 Jika API key tidak diisi, fitur itinerary tetap berjalan menggunakan template lokal.
-
-## Catatan Geolocation
-
-Browser biasanya hanya mengizinkan akses GPS pada:
-
-- `localhost`, atau
-- website yang sudah memakai HTTPS.
-
-Jika izin lokasi ditolak, user masih bisa mengisi latitude dan longitude manual.
