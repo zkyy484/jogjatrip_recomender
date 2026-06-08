@@ -1,78 +1,282 @@
 {% extends "base.html" %}
-{% block title %}Detail {{ wisata.nama }}{% endblock %}
+{% block title %}{{ wisata.nama }} | JogjaTrip AI{% endblock %}
 
 {% block content %}
-<section class="container py-5">
-    <a href="{{ url_for('index') }}" class="text-decoration-none text-success">← Kembali ke pencarian</a>
 
-    <div class="row g-4 mt-2">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm overflow-hidden">
-                <img src="{{ wisata.image }}" class="detail-img" alt="Foto {{ wisata.nama }}" onerror="this.src='https://placehold.co/1000x600?text=Wisata+Jogja'">
-            </div>
+<!-- HERO DETAIL -->
+
+<section class="detail-hero">
+
+    <img
+        src="{{ wisata.image }}"
+        class="detail-hero-image"
+        alt="{{ wisata.nama }}"
+        onerror="this.src='https://placehold.co/1400x800?text=Wisata+Jogja'">
+
+    <div class="detail-overlay"></div>
+
+    <div class="container detail-hero-content">
+
+        <span class="category-pill">
+
+            {{ wisata.derived_category|title }}
+
+        </span>
+
+        <h1 class="detail-title">
+
+            {{ wisata.nama }}
+
+        </h1>
+
+        <p class="detail-subtitle">
+
+            {{ wisata.type }}
+
+        </p>
+
+        <div class="hero-info">
+
+            <span>
+                ⭐ {{ wisata.vote_average }}/5
+            </span>
+
+            <span>
+                👥 {{ wisata.vote_count }} Review
+            </span>
+
         </div>
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <span class="badge text-bg-success mb-2">{{ wisata.derived_category|title }}</span>
-                    <h1 class="h2 fw-bold mb-2">{{ wisata.nama }}</h1>
-                    <p class="text-muted">{{ wisata.type }}</p>
 
-                    <div class="detail-grid mb-4">
-                        <div>
-                            <span class="label">Rating</span>
-                            <b>⭐ {{ wisata.vote_average }} / 5</b>
-                        </div>
-                        <div>
-                            <span class="label">Jumlah rating/pengunjung</span>
-                            <b>{{ wisata.vote_count }}</b>
-                        </div>
-                        <div>
-                            <span class="label">HTM Weekday</span>
-                            <b>{{ wisata.htm_weekday|rupiah }}</b>
-                        </div>
-                        <div>
-                            <span class="label">HTM Weekend</span>
-                            <b>{{ wisata.htm_weekend|rupiah }}</b>
-                        </div>
-                    </div>
-
-                    <p>{{ wisata.description }}</p>
-
-                    <div class="d-grid gap-2 mt-4">
-                        <a class="btn btn-success" target="_blank" href="https://www.google.com/maps/search/?api=1&query={{ wisata.latitude }},{{ wisata.longitude }}">Buka di Google Maps</a>
-                        <a class="btn btn-outline-success" href="{{ url_for('itinerary', wisata_id=wisata.id, lat=lat, lon=lon) }}">Buat Itinerary</a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div class="row g-4 mt-3">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm">
+</section>
+
+<!-- DETAIL -->
+
+<section class="container py-5">
+
+    <div class="row g-4">
+
+        <!-- LEFT -->
+
+        <div class="col-lg-8">
+
+            <div class="card detail-card">
+
                 <div class="card-body p-4">
-                    <h2 class="h5 fw-bold mb-3">Tampilan Maps</h2>
+
+                    <h3 class="section-heading">
+
+                        Tentang Destinasi
+
+                    </h3>
+
+                    <p class="description-text">
+
+                        {{ wisata.description }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- MAP -->
+
+            <div class="card detail-card mt-4">
+
+                <div class="card-body p-4">
+
+                    <h3 class="section-heading">
+
+                        Lokasi Wisata
+
+                    </h3>
+
                     <div class="ratio ratio-16x9 rounded overflow-hidden">
+
                         <iframe
                             src="https://maps.google.com/maps?q={{ wisata.latitude }},{{ wisata.longitude }}&z=15&output=embed"
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade">
+                            loading="lazy">
+
                         </iframe>
+
                     </div>
+
                 </div>
+
             </div>
+
+            <!-- ITINERARY -->
+
+            {% if itinerary %}
+
+            <div class="card itinerary-card mt-4">
+
+                <div class="card-body p-4">
+
+                    <h3 class="section-heading">
+
+                        AI Generated Itinerary
+
+                    </h3>
+
+                    <div class="itinerary-text">
+
+                        {{ itinerary|safe }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
         </div>
 
-        {% if itinerary %}
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm itinerary-card">
+        <!-- RIGHT -->
+
+        <div class="col-lg-4">
+
+            <div class="card booking-card wisata-sidebar">
+
                 <div class="card-body p-4">
-                    <div class="itinerary-text">{{ itinerary|safe }}</div>
+
+                    <h4 class="fw-bold mb-4">
+
+                        Informasi Wisata
+
+                    </h4>
+
+                    <div class="info-item">
+
+                        <span>⭐ Rating</span>
+
+                        <strong>
+                            {{ wisata.vote_average }}/5
+                        </strong>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>👥 Pengunjung</span>
+
+                        <strong>
+                            {{ wisata.vote_count }}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>🎫 HTM Weekday</span>
+
+                        <strong>
+                            {{ wisata.htm_weekday|rupiah }}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>🎫 HTM Weekend</span>
+
+                        <strong>
+                            {{ wisata.htm_weekend|rupiah }}
+                        </strong>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-grid gap-3">
+
+                        <a
+                            target="_blank"
+                            href="https://www.google.com/maps/search/?api=1&query={{ wisata.latitude }},{{ wisata.longitude }}"
+                            class="btn btn-success">
+
+                            Buka Google Maps
+
+                        </a>
+
+                        <a
+                            id="itineraryBtn"
+                            href="{{ url_for('itinerary', wisata_id=wisata.id, lat=lat, lon=lon) }}"
+                            class="btn btn-outline-success">
+
+                            Buat Itinerary Perjalanan
+
+                        </a>
+
+                    </div>
+
+                    <!-- LOADING -->
+
+                    <div
+                        id="loadingBox"
+                        class="text-center mt-4"
+                        style="display:none;">
+
+                        <div
+                            class="spinner-border text-success">
+
+                        </div>
+
+                        <p class="mt-2 mb-0">
+
+                            Membuat itinerary menggunakan AI...
+
+                        </p>
+
+                    </div>
+
                 </div>
+
             </div>
+
         </div>
-        {% endif %}
+
     </div>
+
 </section>
+
+<!-- BACK BUTTON -->
+
+<div class="container pb-5">
+
+    <a href="{{ url_for('index') }}"
+        class="btn btn-back">
+
+        ← Kembali ke Pencarian
+    </a>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const btn =
+document.getElementById("itineraryBtn");
+
+if(btn){
+
+btn.addEventListener("click", function(){
+
+const loading =
+document.getElementById("loadingBox");
+
+loading.style.display = "block";
+
+});
+
+}
+
+</script>
+
 {% endblock %}
