@@ -48,8 +48,32 @@
                 <ul class="navbar-nav ms-auto align-items-lg-center">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">
-                            Home
+                        <a class="nav-link" href="{{ url_for('index') }}"> 
+                            <i class="fa-solid fa-house me-1"></i> Beranda
+                        </a>
+                    </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}">
+                        <i class="fa-solid fa-building-user me-1"></i> Tentang Kami
+                    </a>
+                </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('panduan') }}">
+                            <i class="fa-solid fa-book-open-reader me-1"></i> Panduan
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('map_explorer') }}">
+                            <i class="fa-solid fa-map-location-dot me-1"></i> Jelajah Peta
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('analytics') }}">
+                            <i class="fa-solid fa-chart-pie me-1"></i> Analitika
                         </a>
                     </li>
 
@@ -107,14 +131,27 @@
                     <ul class="footer-links">
 
                         <li>
-                            <a href="{{ url_for('index') }}">
-                                Home
+                            <a href="{{ url_for('index') }}"> Beranda
                             </a>
                         </li>
 
                         <li>
-                            <a href="#recommendation">
-                                Recommendation
+                            <a href="{{ url_for('about') }}"> Tentang Kami
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('panduan') }}"> Panduan
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('map_explorer') }}"> Jelajah Peta
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('analytics') }}"> Analitika
                             </a>
                         </li>
 

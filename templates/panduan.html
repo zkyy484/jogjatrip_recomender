@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Panduan | JogjaTrip AI{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, #172037 0%, #1E293B 100%); color: #ffffff; text-align: center; position: relative;">
+    <div class="container py-1 position-relative" style="z-index: 2;">
+        <span class="section-badge mb-3" style="background: rgba(14, 165, 164, 0.2); color: #0EA5A4; border: 1px solid #0EA5A4;">Informasi Sistem</span>
+        <h1 class="display-5 fw-bold mb-3">Panduan JogjaTrip</h1>
+        <p class="lead mx-auto text-alt" style="max-width: 750px; color: #94A3B8;">
+           Sistem panduan interaktif untuk membantu Anda mengoperasikan platform JogjaTrip, mulai dari pencarian berbasis lokasi (GPS) hingga pembuatan itinerary menggunakan teknologi Artificial Intelligence.
+        </p>
+    </div>
+</div>
+
+<section class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 16px; background: #ffffff;">
+                <h4 class="fw-bold mb-4" style="color: #0EA5A4;">
+                    <i class="fa-solid fa-map-location-dot me-2"></i>Panduan Penggunaan Aplikasi
+                </h4>
+                
+                <div class="position-relative ps-4 border-start border-2" style="border-color: #0EA5A4 !important;">
+                    <div class="mb-4 position-relative">
+                        <span class="position-absolute top-0 start-0 translate-middle text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 30px; height: 30px; left: -26px !important; background: #0EA5A4;">1</span>
+                        <h6 class="fw-bold text-dark mb-1">Aktifkan Akses Lokasi (GPS Geolocation)</h6>
+                        <p class="text-muted small">Izinkan peramban (browser) mendeteksi lokasi perangkat Anda saat muncul notifikasi pop-up. Koordinat latitude dan longitude akan terisi otomatis secara real-time via skrip logika sistem.</p>
+                    </div>
+
+                    <div class="mb-4 position-relative">
+                        <span class="position-absolute top-0 start-0 translate-middle text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 30px; height: 30px; left: -26px !important; background: #0EA5A4;">2</span>
+                        <h6 class="fw-bold text-dark mb-1">Tentukan Kategori & Kata Kunci Konten</h6>
+                        <p class="text-muted small">Pilih filter kategori objek wisata (seperti Candi, Pantai, Alam, Budaya) dan ketikkan kata kunci pencarian spesifik untuk memetakan objek yang relevan di Jogja.</p>
+                    </div>
+
+                    <div class="mb-4 position-relative">
+                        <span class="position-absolute top-0 start-0 translate-middle text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 30px; height: 30px; left: -26px !important; background: #0EA5A4;">3</span>
+                        <h6 class="fw-bold text-dark mb-1">Analisis Hasil Skor Rekomendasi (Scoring)</h6>
+                        <p class="text-muted small">Sistem secara cerdas mengurutkan objek wisata berdasarkan matriks bobot nilai tertinggi (kombinasi kecocokan teks, ulasan popularitas, dan akurasi rumus Haversine jarak terdekat).</p>
+                    </div>
+
+                    <div class="position-relative">
+                        <span class="position-absolute top-0 start-0 translate-middle text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 30px; height: 30px; left: -26px !important; background: #0EA5A4;">4</span>
+                        <h6 class="fw-bold text-dark mb-1">Pembuatan Rencana Perjalanan otomatis (Gemini GenAI)</h6>
+                        <p class="text-muted small">Tekan tombol <strong>"Lihat Detail"</strong> pada destinasi incaran Anda, kemudian picu tombol <strong>"Buat Itinerary Perjalanan"</strong> untuk meminta Large Language Model (LLM) merumuskan jadwal kunjungan wisata komprehensif.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 16px; background: #ffffff;">
+                <h4 class="fw-bold mb-4" style="color: #0F172A;">
+                    <i class="fa-solid fa-gears me-2"></i>Spesifikasi Sistem
+                </h4>
+
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item bg-transparent px-0 py-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="d-block text-dark small">Kecerdasan Buatan (Generative AI)</strong>
+                            <span class="text-muted style" style="font-size: 0.75rem;">Model Pemrosesan Bahasa Alami</span>
+                        </div>
+                        <span class="badge rounded-pill px-3 py-2" style="background: rgba(14, 165, 164, 0.1); color: #0EA5A4;">Gemini 2.5 Flash</span>
+                    </div>
+                    
+                    <div class="list-group-item bg-transparent px-0 py-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="d-block text-dark small">Algoritma Geospasial</strong>
+                            <span class="text-muted style" style="font-size: 0.75rem;">Kalkulasi Jarak Matriks Kelengkungan Bumi</span>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill px-3 py-2">Haversine Formula</span>
+                    </div>
+
+                    <div class="list-group-item bg-transparent px-0 py-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="d-block text-dark small">Arsitektur Kerangka Kerja (Framework)</strong>
+                            <span class="text-muted style" style="font-size: 0.75rem;">Backend Server & WSGI Handling</span>
+                        </div>
+                        <span class="badge bg-dark rounded-pill px-3 py-2">Flask Python 3</span>
+                    </div>
+
+                    <div class="list-group-item bg-transparent px-0 py-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="d-block text-dark small">Basis Data Relasional</strong>
+                            <span class="text-muted style" style="font-size: 0.75rem;">Penyimpanan Lokal File Sistem</span>
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3 py-2">SQLite 3</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -68,8 +68,8 @@
 
                         </h3>
 
-                        <form method="POST">
-
+                        <form method="POST" id="recommendationForm" action="{{ url_for('index') }}#recommendation">
+                        
                             <div class="mb-3">
 
                                 <label class="form-label">
@@ -172,7 +172,8 @@
 
                                 <button
                                     type="submit"
-                                    class="btn btn-success">
+                                    class="btn btn-success"
+                                    id="searchButton">
 
                                     🔍 Cari Wisata
 
@@ -193,6 +194,21 @@
     </div>
 
 </section>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-card">
+        <div class="loading-spinner"></div>
+
+        <p>
+            Sistem sedang memproses permintaan Anda.
+        </p>
+
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
+    </div>
+</div>
 
 <!-- HASIL REKOMENDASI -->
 
@@ -322,4 +338,6 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/location.js') }}"></script>
+
+
 {% endblock %}

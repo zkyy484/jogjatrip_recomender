@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Tentang Kami | JogjaTrip Recommender{% endblock %}
+
+{% block content %}
+<div class="py-4 text-center" style="background: linear-gradient(135deg, #172037 0%, #1E293B 100%); color: #ffffff;">
+    <div class="container py-1">
+        <span class="section-badge mb-3" style="background: rgba(14, 165, 164, 0.15); color: #0EA5A4; border: 1px solid rgba(14, 165, 164, 0.3);">Profil Platform</span>
+        <h1 class="display-5 fw-bold mb-3">Tentang JogjaTrip</h1>
+        <p class="lead mx-auto text-alt" style="max-width: 800px; color: #94A3B8;">
+            Sistem rekomendasi cerdas yang diintegrasikan untuk mengoptimalkan potensi sektor pariwisata Daerah Istimewa Yogyakarta melalui implementasi analitika Data Science dan Kecerdasan Buatan.
+    </div>
+</div>
+
+<section class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <h3 class="fw-bold mb-3 text-dark">Latar Belakang</h3>
+            <p class="text-muted" style="line-height: 1.8; text-align: justify;">
+                Yogyakarta merupakan salah satu pusat destinasi pariwisata terbesar di Indonesia dengan ratusan objek wisata budaya, alam, sejarah, hingga kuliner. Namun, banyaknya pilihan sering kali membuat wisatawan mengalami kendala dalam menentukan destinasi yang sesuai dengan letak geografis terkini dan preferensi mereka. 
+            </p>
+            <p class="text-muted" style="line-height: 1.8; text-align: justify;">
+                <strong>JogjaTrip</strong> hadir sebagai solusi inovatif yang menjembatani kebutuhan tersebut. Proyek ini dikembangkan sebagai bentuk nyata implementasi keilmuan <em>Data Science</em> dan <em>Artificial Intelligence</em> skala industri dalam mendukung gerakan <em>Smart Tourism</em> di era digital.
+            </p>
+
+            <div class="row g-3 mt-3">
+                <div class="col-6">
+                    <div class="p-3 border rounded-3 bg-white shadow-sm">
+                        <h4 class="fw-bold mb-1" style="color: #0EA5A4;">Serverless</h4>
+                        <small class="text-muted">Arsitektur DB SQLite 3</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-3 border rounded-3 bg-white shadow-sm">
+                        <h4 class="fw-bold mb-1" style="color: #0EA5A4;">Real-Time</h4>
+                        <small class="text-muted">Kalkulasi Jarak Geodesik</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 shadow-sm h-100" style="border-radius: 16px; background: #ffffff;">
+                <h4 class="fw-bold mb-4 text-dark"><i class="fa-solid fa-bullseye me-2" style="color: #0EA5A4;"></i>Visi & Misi</h4>
+                
+                <div class="mb-4">
+                    <h6 class="fw-bold text-dark mb-2">Visi Platform</h6>
+                    <p class="text-muted small" style="line-height: 1.6;">
+                        Menjadi pelopor platform rekomendasi perjalanan wisata di Yogyakarta yang paling presisi, adaptif, dan andal dengan mengedepankan integrasi teknologi AI terdepan.
+                    </p>
+                </div>
+
+                <hr class="my-3 text-muted">
+
+                <div>
+                    <h6 class="fw-bold text-dark mb-3">Misi Pengembangan</h6>
+                    <ul class="list-unstyled text-muted small">
+                        <li class="mb-2 d-flex align-items-start">
+                            <i class="fa-solid fa-check-circle text-success me-2 mt-1"></i>
+                            <span>Menyediakan kalkulasi pemeringkatan akurat menggunakan algoritma pembobotan parameter multi-kriteria.</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-start">
+                            <i class="fa-solid fa-check-circle text-success me-2 mt-1"></i>
+                            <span>Mengintegrasikan Location Based Service (LBS) menggunakan Haversine Formula demi kenyamanan mobilitas wisatawan.</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-start">
+                            <i class="fa-solid fa-check-circle text-success me-2 mt-1"></i>
+                            <span>Memanfaatkan kekuatan LLM (Large Language Model) dari Google Gemini API untuk menyusun rencana perjalanan secara instan.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

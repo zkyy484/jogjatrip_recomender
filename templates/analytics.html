@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Analitika Pariwisata | JogjaTrip{% endblock %}
+
+{% block content %}
+<div class="py-4 text-center" style="background: linear-gradient(135deg, #172037 0%, #1E293B 100%); color: #ffffff;">
+    <div class="container py-1">
+        <span class="section-badge mb-3" style="background: rgba(14, 165, 164, 0.15); color: #0EA5A4; border: 1px solid rgba(14, 165, 164, 0.3);">Diagram Sebaran Wisata</span>
+        <h1 class="display-5 fw-bold mb-3">Analitika Data</h1>
+        <p class="lead mx-auto text-alt" style="max-width: 800px; color: #94A3B8;">
+            Visualisasi statistik sebaran objek wisata dan tingkat popularitas destinasi di wilayah Yogyakarta.
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        
+        <div class="col-md-6">
+            <div class="p-4 bg-white shadow-sm h-100" style="border-radius: 16px; border: 1px solid #E2E8F0;">
+                <h5 class="fw-bold text-dark text-center mb-4">Persentase Destinasi Per Kategori</h5>
+                <div style="height: 380px; position: relative; margin: auto;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="p-4 bg-white shadow-sm h-100" style="border-radius: 16px; border: 1px solid #E2E8F0;">
+                <h5 class="fw-bold text-dark text-center mb-4">Top 5 Destinasi Berdasarkan Ulasan</h5>
+                <div style="height: 380px; position: relative;">
+                    <canvas id="popularityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. RENDER KATEGORI CHART (DOUGHNUT)
+    const katData = {{ kategori|tojson }};
+    
+    // Palet warna variatif, profesional, dan kontras tinggi agar tiap kategori mudah diidentifikasi
+    const premiumColors = [
+        '#2563EB', // Blue
+        '#10B981', // Emerald Green
+        '#F59E0B', // Amber Gold
+        '#EF4444', // Red
+        '#8B5CF6', // Purple
+        '#EC4899', // Pink
+        '#06B6D4', // Cyan
+        '#F97316', // Orange
+        '#14B8A6', // Teal
+        '#6366F1', // Indigo
+        '#64748B'  // Slate Gray
+    ];
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(katData),
+            datasets: [{
+                data: Object.values(katData),
+                backgroundColor: premiumColors.slice(0, Object.keys(katData).length),
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom', // Memindahkan legenda ke bawah agar ruang grafik lebih luas
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15,
+                        font: {
+                            family: 'Poppins',
+                            size: 11
+                        },
+                        color: '#334155'
+                    }
+                }
+            }
+        }
+    });
+
+    // 2. RENDER POPULARITAS CHART (BAR)
+    const popData = {{ populer|tojson }};
+    new Chart(document.getElementById('popularityChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(popData),
+            datasets: [{
+                label: 'Jumlah Ulasan Wisatawan',
+                data: Object.values(popData),
+                // Menggunakan warna navy gelap yang senada dengan header aplikasi Anda
+                backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+                borderColor: '#0F172A',
+                borderWidth: 1,
+                borderRadius: 6 // Membuat sudut batang grafik sedikit melengkung modern
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false // Menyembunyikan label kotak atas karena judul sudah informatif
+                }
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: true,
+                    grid: {
+                        color: '#F1F5F9'
+                    },
+                    ticks: {
+                        color: '#64748B',
+                        font: { family: 'Poppins' }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false // Menghilangkan garis grid vertikal agar terlihat clean
+                    },
+                    ticks: {
+                        color: '#334155',
+                        font: { 
+                            family: 'Poppins',
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

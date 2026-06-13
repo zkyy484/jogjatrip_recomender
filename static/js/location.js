@@ -102,3 +102,35 @@ function getLocation() {
 
     );
 }
+
+const recommendationForm = document.getElementById("recommendationForm");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const searchButton = document.getElementById("searchButton");
+
+    recommendationForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        loadingOverlay.classList.add("active");
+
+        searchButton.disabled = true;
+        searchButton.innerHTML = "⏳ Menganalisis...";
+
+        setTimeout(function() {
+            recommendationForm.submit();
+        }, 2500);
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.location.hash === "#recommendation") {
+            const recommendationSection = document.getElementById("recommendation");
+
+            if (recommendationSection) {
+                setTimeout(function() {
+                    recommendationSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                }, 300);
+            }
+        }
+    });

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Jelajah Peta Interaktif | JogjaTrip{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="py-4 text-center" style="background: linear-gradient(135deg, #172037 0%, #1E293B 100%); color: #ffffff;">
+    <div class="container py-1">
+        <span class="section-badge mb-3" style="background: rgba(14, 165, 164, 0.15); color: #0EA5A4; border: 1px solid rgba(14, 165, 164, 0.3);">Peta Sebaran Destinasi</span>
+        <h1 class="display-5 fw-bold mb-3">Peta Destinasi Wisata</h1>
+        <p class="lead mx-auto text-alt" style="max-width: 800px; color: #94A3B8;">
+            Eksplorasi persebaran geografis seluruh objek wisata di Yogyakarta secara spasial dan interaktif.
+        </p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
+        <div id="map" style="height: 600px; width: 100%;"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Titik pusat koordinat awal: Pusat Kota Yogyakarta
+    const map = L.map('map').setView([-7.7956, 110.3695], 10);
+
+    // Load template peta OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Render data koordinat dari Flask ke Marker Leaflet
+    const wisataData = {{ wisata_list|tojson }};
+    
+    wisataData.forEach(function(item) {
+        if (item.latitude && item.longitude) {
+            const marker = L.marker([item.latitude, item.longitude]).addTo(map);
+            
+            // Konten Popup saat marker diklik
+            const popupContent = `
+                <div style="width: 200px; font-family: 'Poppins', sans-serif;">
+                    <img src="${item.image}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; mb-2" onerror="this.src='https://placehold.co/200x100?text=Wisata'">
+                    <h6 style="font-weight: 700; margin: 8px 0 4px 0; color:#0F172A;">${item.nama}</h6>
+                    <small style="color: #64748B; display:block; margin-bottom: 6px;">${item.type.replace('_', ' ')}</small>
+                    <span style="font-size: 0.85rem; display:block; margin-bottom: 8px;">⭐ ${item.vote_average}/5</span>
+                    <a href="/detail/${item.id}" class="btn btn-sm btn-dark text-white w-100" style="font-size: 0.75rem; padding: 4px;">Lihat Detail</a>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+        }
+    });
+</script>
+{% endblock %}

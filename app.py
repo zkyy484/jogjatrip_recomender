@@ -500,6 +500,56 @@ def prepare_db_command():
     init_db(force=True)
     print(f"Database berhasil dibuat: {DB_PATH}")
 
+@app.route("/panduan")
+def panduan():
+    """
+    Menampilkan halaman About Us yang berisi informasi sistem,
+    spesifikasi teknologi pendukung, serta panduan manual penggunaan aplikasi.
+    """
+    # Mengirim parameter 'now' agar tahun pada footer di base.html tetap ter-render dinamis
+    return render_template("panduan.html", now=datetime.now().year)
+
+@app.route("/about")
+def about():
+    """
+    Menampilkan halaman profil resmi JogjaTrip Recommender yang berisi
+    latar belakang proyek, visi, misi, dan nilai pengembangan platform.
+    """
+    return render_template("about.html", now=datetime.now().year)
+
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route("/map-explorer")
+def map_explorer():
+    """Mengambil semua titik koordinat wisata untuk dipetakan ke Leaflet.js"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nama, type, latitude, longitude, vote_average, image FROM wisata")
+    wisata_data = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return render_template("map.html", wisata_list=wisata_data, now=datetime.now().year)
+
+@app.route("/analytics")
+def analytics():
+    """Mengagregasi data wisata untuk visualisasi Chart.js"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # 1. Hitung total destinasi per kategori
+    cursor.execute("SELECT type, COUNT(*) as jumlah FROM wisata GROUP BY type")
+    kategori_rows = cursor.fetchall()
+    kategori_data = {row['type'].replace('_', ' ').title(): row['jumlah'] for row in kategori_rows}
+    
+    # 2. Ambil 5 wisata dengan ulasan terbanyak
+    cursor.execute("SELECT nama, vote_count FROM wisata ORDER BY vote_count DESC LIMIT 5")
+    populer_rows = cursor.fetchall()
+    populer_data = {row['nama']: row['vote_count'] for row in populer_rows}
+    
+    conn.close()
+    return render_template("analytics.html", kategori=kategori_data, populer=populer_data, now=datetime.now().year)
 
 # Database otomatis dibuat saat aplikasi pertama kali dijalankan.
 init_db(force=True)
