@@ -305,37 +305,80 @@ def generate_rule_based_itinerary(wisata: sqlite3.Row) -> str:
         tips = "Datang lebih awal agar waktu kunjungan lebih fleksibel."
 
     return f"""
-### Itinerary 1 Hari ke {nama}
+## Itinerary 1 Hari ke {nama}
 
-**07.00 - 08.00** — Berangkat dari lokasi awal menuju {nama}.  
-**08.00 - 08.30** — Tiba di lokasi, membeli tiket, dan orientasi area wisata.  
-**08.30 - 10.30** — Aktivitas utama: {focus}.  
-**10.30 - 11.30** — Istirahat, membeli minuman/makanan ringan, dan mengambil foto tambahan.  
-**11.30 - 13.00** — Makan siang di area sekitar wisata.  
-**13.00 - 14.30** — Eksplorasi area tambahan atau spot foto terbaik.  
-**14.30 - 15.00** — Review foto, membeli oleh-oleh kecil jika tersedia, lalu persiapan pulang.  
-**15.00 - selesai** — Perjalanan pulang.
+| Waktu | Kegiatan | Keterangan |
+|---|---|---|
+| 07.00 - 08.00 | Berangkat menuju {nama} | Pastikan baterai HP penuh dan maps sudah siap. |
+| 08.00 - 08.30 | Tiba dan membeli tiket | Cek kembali HTM dan aturan kunjungan di lokasi. |
+| 08.30 - 10.30 | Aktivitas utama | Fokus kunjungan: {focus}. |
+| 10.30 - 11.30 | Istirahat dan foto | Cari spot nyaman untuk istirahat sebentar. |
+| 11.30 - 13.00 | Makan siang | Pilih warung atau tempat makan terdekat dari area wisata. |
+| 13.00 - 15.00 | Eksplorasi tambahan | Lanjutkan ke area sekitar atau spot wisata terdekat. |
+| 15.00 - selesai | Pulang | Review foto dan persiapan perjalanan pulang. |
 
-**Tips:** {tips}
+## Tips Kunjungan
+
+- {tips}
+- Datang lebih pagi agar waktu kunjungan lebih leluasa.
+- Siapkan uang tunai untuk tiket, parkir, dan kebutuhan kecil.
+
+## Estimasi Biaya
+
+| Kebutuhan | Estimasi |
+|---|---|
+| Tiket masuk weekday | {currency(wisata['htm_weekday'])} |
+| Tiket masuk weekend | {currency(wisata['htm_weekend'])} |
+| Makan/minum | Rp 25.000 - Rp 50.000 |
+| Transportasi | Menyesuaikan jarak dan kendaraan |
 """.strip()
+
+def extract_openai_output_text(data: dict) -> str:
+    """Mengambil teks dari response OpenAI Responses API secara aman."""
+    if not isinstance(data, dict):
+        return ""
+
+    # Beberapa SDK/response bisa menyediakan output_text langsung.
+    if data.get("output_text"):
+        return data.get("output_text", "").strip()
+
+    # Struktur umum Responses API: output -> content -> text.
+    texts = []
+    for output_item in data.get("output", []):
+        for content_item in output_item.get("content", []):
+            text = content_item.get("text")
+            if text:
+                texts.append(text)
+
+    return "\n".join(texts).strip()
+
 
 def generate_ai_itinerary(wisata: sqlite3.Row) -> str:
     """
-    Membuat itinerary wisata menggunakan Gemini REST API.
-    Jika Gemini gagal, sistem memakai itinerary lokal.
+    Membuat itinerary wisata menggunakan OpenAI Responses API.
+    Jika OpenAI gagal, sistem memakai itinerary lokal.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
-    model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    # Sesuai permintaan kamu, model bisa dicoba melalui .env.
+    # Jika model gpt-5.4-mini belum tersedia di akun/API kamu, ganti menjadi gpt-5.4.
+    model_name = os.getenv("OPENAI_MODEL", "gpt-5.4-mini")
 
     if not api_key:
-        return generate_rule_based_itinerary(wisata) + "\n\nCatatan: GEMINI_API_KEY belum terbaca dari file .env."
+        return generate_rule_based_itinerary(wisata) + "\n\nCatatan: OPENAI_API_KEY belum terbaca dari file .env."
+
+    instructions = """
+Kamu adalah asisten perjalanan wisata di Yogyakarta.
+Tugasmu membuat itinerary wisata yang rapi, realistis, dan mudah dibaca.
+Gunakan Bahasa Indonesia.
+Output wajib memakai markdown tabel.
+Jangan membuka jawaban dengan kalimat basa-basi seperti 'Tentu, berikut itinerary...'.
+""".strip()
 
     prompt = f"""
-Kamu adalah asisten perjalanan wisata di Yogyakarta.
-
-Buatkan itinerary wisata 1 hari dalam Bahasa Indonesia.
-Gunakan format markdown tabel yang rapi.
-Jangan beri respon 'Tentu, ini dia itinerary wisata 1 hari ke ...' langsung saja ke rekomndasi itinerarynya
+Buatkan itinerary wisata 1 hari.
+Usahakan beri rekomendasi tempat terdekat dari wisata tersebut pada tabel itinerary bagian kegiatan dan keterangan.
+Usahakan beri rekomendasi tempat terdekat dari wisata tersebut pada tabel itinerary bagian kegiatan dan keterangan, sebagai contoh rute selanjutnya menuju ke tempat wisata A, kemudian untuk makan siang bisa menuju ke warung makan B
 
 Data wisata:
 - Nama tempat: {wisata['nama']}
@@ -375,52 +418,41 @@ Format output wajib seperti ini:
 
 Jangan membuat informasi yang terlalu berlebihan.
 Jika data tidak tersedia, tulis sebagai estimasi.
-"""
+""".strip()
 
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+        url = "https://api.openai.com/v1/responses"
 
         headers = {
             "Content-Type": "application/json",
-            "x-goog-api-key": api_key,
+            "Authorization": f"Bearer {api_key}",
         }
 
         payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "text": prompt
-                        }
-                    ]
-                }
-            ]
+            "model": model_name,
+            "instructions": instructions,
+            "input": prompt,
         }
 
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response = requests.post(url, headers=headers, json=payload, timeout=45)
 
         if response.status_code != 200:
+            fallback_message = generate_rule_based_itinerary(wisata)
             return (
-                generate_rule_based_itinerary(wisata)
-                + f"\n\nCatatan: Gemini gagal digunakan. Status code: {response.status_code}. Response: {response.text}"
+                fallback_message
+                + f"\n\nCatatan: OpenAI gagal digunakan. Status code: {response.status_code}. Response: {response.text}"
             )
 
         data = response.json()
-
-        itinerary_text = (
-            data.get("candidates", [{}])[0]
-            .get("content", {})
-            .get("parts", [{}])[0]
-            .get("text", "")
-        )
+        itinerary_text = extract_openai_output_text(data)
 
         if itinerary_text:
             return itinerary_text
 
-        return generate_rule_based_itinerary(wisata) + "\n\nCatatan: Gemini tidak mengembalikan teks."
+        return generate_rule_based_itinerary(wisata) + "\n\nCatatan: OpenAI tidak mengembalikan teks."
 
     except Exception as error:
-        return generate_rule_based_itinerary(wisata) + f"\n\nCatatan: Gemini gagal digunakan. Error: {error}"
+        return generate_rule_based_itinerary(wisata) + f"\n\nCatatan: OpenAI gagal digunakan. Error: {error}"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
