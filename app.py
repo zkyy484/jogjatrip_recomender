@@ -120,10 +120,8 @@ def prepare_data(csv_path: str = CSV_PATH) -> pd.DataFrame:
     df["image"] = df["image"].replace("nan", "")
     df["description"] = df["description"].replace("nan", "Deskripsi belum tersedia.")
 
-    # Menghapus duplikat berdasarkan nama dan koordinat.
     df = df.drop_duplicates(subset=["nama", "latitude", "longitude"], keep="first")
 
-    # Feature engineering untuk rekomendasi.
     df["derived_category"] = df.apply(derive_category, axis=1)
     df["search_text"] = (
         df["nama"].map(normalize_text) + " "
@@ -224,7 +222,6 @@ def category_score(category: str, row: sqlite3.Row) -> float:
     if category == derived or category == tipe or category in text:
         return 1.0
 
-    # Sinonim sederhana agar input user seperti "budaya" tetap cocok dengan Budaya dan Sejarah.
     if category == "budaya" and "budaya" in text:
         return 1.0
     if category == "alam" and (derived in ["gunung", "tebing", "pantai", "wisata air"] or "alam" in text):
@@ -260,13 +257,12 @@ def recommend_wisata(category: str, keyword: str, user_lat: float | None, user_l
 
         if has_location:
             distance = haversine_km(user_lat, user_lon, row["latitude"], row["longitude"])
-            # Radius Jogja dan sekitarnya biasanya < 100 km. Semakin dekat, skor semakin besar.
+
             distance_norm = max(0.0, 1 - min(distance, 100) / 100)
         else:
             distance = None
             distance_norm = 0.5
 
-        # Skor akhir mempertimbangkan kategori, keyword, jarak, dan rating.
         final_score = (
             0.35 * c_score
             + 0.35 * k_score
@@ -274,7 +270,6 @@ def recommend_wisata(category: str, keyword: str, user_lat: float | None, user_l
             + 0.10 * rating_norm
         )
 
-        # Jika user mengisi filter, prioritaskan kandidat yang masih punya kecocokan.
         if category or keyword:
             if c_score <= 0 and k_score < 0.35:
                 continue
@@ -338,11 +333,9 @@ def extract_openai_output_text(data: dict) -> str:
     if not isinstance(data, dict):
         return ""
 
-    # Beberapa SDK/response bisa menyediakan output_text langsung.
     if data.get("output_text"):
         return data.get("output_text", "").strip()
 
-    # Struktur umum Responses API: output -> content -> text.
     texts = []
     for output_item in data.get("output", []):
         for content_item in output_item.get("content", []):
@@ -360,8 +353,6 @@ def generate_ai_itinerary(wisata: sqlite3.Row) -> str:
     """
     api_key = os.getenv("OPENAI_API_KEY")
 
-    # Sesuai permintaan kamu, model bisa dicoba melalui .env.
-    # Jika model gpt-5.4-mini belum tersedia di akun/API kamu, ganti menjadi gpt-5.4.
     model_name = os.getenv("OPENAI_MODEL", "gpt-5.4-mini")
 
     if not api_key:
@@ -538,7 +529,7 @@ def panduan():
     Menampilkan halaman About Us yang berisi informasi sistem,
     spesifikasi teknologi pendukung, serta panduan manual penggunaan aplikasi.
     """
-    # Mengirim parameter 'now' agar tahun pada footer di base.html tetap ter-render dinamis
+
     return render_template("panduan.html", now=datetime.now().year)
 
 @app.route("/about")
@@ -570,12 +561,10 @@ def analytics():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # 1. Hitung total destinasi per kategori
     cursor.execute("SELECT type, COUNT(*) as jumlah FROM wisata GROUP BY type")
     kategori_rows = cursor.fetchall()
     kategori_data = {row['type'].replace('_', ' ').title(): row['jumlah'] for row in kategori_rows}
     
-    # 2. Ambil 5 wisata dengan ulasan terbanyak
     cursor.execute("SELECT nama, vote_count FROM wisata ORDER BY vote_count DESC LIMIT 5")
     populer_rows = cursor.fetchall()
     populer_data = {row['nama']: row['vote_count'] for row in populer_rows}
@@ -583,7 +572,6 @@ def analytics():
     conn.close()
     return render_template("analytics.html", kategori=kategori_data, populer=populer_data, now=datetime.now().year)
 
-# Database otomatis dibuat saat aplikasi pertama kali dijalankan.
 init_db(force=True)
 
 if __name__ == "__main__":
